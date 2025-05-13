@@ -1,0 +1,65 @@
+docker builder prune
+
+docker build -t data_api:1.0 . \
+--progress=plain \
+--no-cache=true
+
+516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-repository:latest
+516547737741.dkr.ecr.eu-south-2.amazonaws.com/preprocess-repository:latest
+516547737741.dkr.ecr.eu-south-2.amazonaws.com/model_api_test:latest
+
+docker run --rm --name data_api -p 5000:5000 \
+-e TS_AWS_ACCESS_KEY_ID= \
+-e TS_AWS_SECRET_ACCESS_KEY= \
+-e TS_REGION_NAME=eu-central-1 \
+-e S3_IAM_ROLE_ARN=arn:aws:iam::516547737741:role/s3_sacyr_role \
+-e S3_BUCKET_NAME=tpc-production \
+-e S3_REGION_NAME=eu-south-2 \
+-e S3_AWS_ACCESS_KEY_ID= \
+-e S3_AWS_SECRET_ACCESS_KEY= \
+-e S3_BUCKET_NAME_DATA_CONFIG=data-production-config \
+-e S3_BUCKET_NAME_PREPROCESS_CONFIG=preprocess-production-config \
+-e S3_BUCKET_NAME_MODEL_CONFIG=model-production-config \
+-e S3_BUCKET_NAME_TRAINED_MODEL_CONFIG=trained-model-production-config \
+-e S3_BUCKET_NAME_OPTIMIZATION_CONFIG=optimization-production-config \
+-e S3_BUCKET_NAME_METRICS_CONFIG=metrics-production-config \
+-d 
+516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-repository:latest
+
+-d data_api:1.0
+
+DEVELOPMENT
+docker run --rm --name data_api -p 5000:5000 \
+-e TS_AWS_ACCESS_KEY_ID= \
+-e TS_AWS_SECRET_ACCESS_KEY= \
+-e TS_REGION_NAME=eu-central-1 \
+-e S3_IAM_ROLE_ARN=arn:aws:iam::516547737741:role/s3_sacyr_role_development \
+-e S3_BUCKET_NAME=tpc-development \
+-e S3_REGION_NAME=eu-south-2 \
+-e S3_AWS_ACCESS_KEY_ID= \
+-e S3_AWS_SECRET_ACCESS_KEY= \
+-e S3_BUCKET_NAME_DATA_CONFIG=data-development-config \
+-e S3_BUCKET_NAME_PREPROCESS_CONFIG=preprocess-development-config \
+-e S3_BUCKET_NAME_MODEL_CONFIG=model-development-config \
+-e S3_BUCKET_NAME_TRAINED_MODEL_CONFIG=trained-model-development-config \
+-e S3_BUCKET_NAME_OPTIMIZATION_CONFIG=optimization-development-config \
+-e S3_BUCKET_NAME_METRICS_CONFIG=metrics-development-config \
+-d ae199b983530
+516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-dev-repository:latest
+
+-d data_api:1.0
+
+docker exec -it data_api bash
+
+docker cp "local_path" data_api:app/data_api
+docker cp data_api:app/data_api "local_path"
+
+docker tag data_api:1.0 516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-repository
+docker tag data_api_dev:1.0 516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-dev-repository
+
+docker tag data_api-repository:latest 516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-repository:latest
+docker tag data_api-dev-repository:latest 516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-dev-repository:latest
+
+docker push 516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-repository
+docker push 516547737741.dkr.ecr.eu-south-2.amazonaws.com/data_api-dev-repository
+

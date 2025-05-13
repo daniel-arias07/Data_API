@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "data-api"
+version = "0.1.0"
+description = ""
+authors = ["daniel-arias07 <daniel.arias2493@gmail.com>"]
+readme = "README.md"
+packages = [{include = "data_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^2.2.3"
+flask-restful = "^0.3.9"
+boto3 = "^1.26.117"
+awswrangler = "^3.0.0"
+pandas = ">=1.2.0,<1.5.0 || >1.5.0,<2.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

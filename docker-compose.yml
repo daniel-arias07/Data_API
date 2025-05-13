@@ -1,0 +1,10 @@
+version: "1.0"
+services:
+  api1:
+    build: ./api1
+    ports:
+      - "5000:5000"
+    networks:
+      - my_network
+networks:
+  my_network:
